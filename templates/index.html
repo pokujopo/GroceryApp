@@ -1,0 +1,38 @@
+ import os
+from django.shortcuts import render
+from .models import Video
+
+def index(request):
+    # Vuta video zote na uzipange kuanzia mpya zaidi
+    videos_from_db = Video.objects.all().order_by('-created_at')
+    
+    videos_safi = []
+    for item in videos_from_db:
+        # Ondoa '?_=3' au parameter zozote za ziada mwishoni
+        url_safi = item.url.split('?')[0]
+        # Chukua jina la mwisho (e.g., Axel-Levi-Leaked-Video-3.mp4)
+        jina_la_faili = os.path.basename(url_safi)
+        # Safisha dashi na doti ili liwe jina zuri la kusomeka
+        jina_safi = jina_la_faili.replace('-', ' ').replace('_', ' ').replace('.mp4', '')
+        
+        videos_safi.append({
+            'url': item.url,
+            'title': jina_safi
+        })
+        
+    return render(request, 'index.html', {'videos': videos_safi})
+
+from django.http import HttpResponse
+from .tasks import catch_video_via_sitemap  # Lazima jina lifanane hapa!
+
+def trigger_scraper(request):
+    catch_video_via_sitemap.delay()
+    return HttpResponse("""
+        <html>
+            <body style="font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background: #121212; color: #fff;">
+                <h2 style="color: #4CAF50;">🚀 Robot ya Selenium Imewashwa Background!</h2>
+                <p>Muda huu Chrome Headless inapita Cloudflare kupata video...</p>
+                <p><a href="/" style="color: #2196F3; text-decoration: none; font-weight: bold;">Bofya Hapa Kurudi Mwanzo</a></p>
+            </body>
+        </html>
+    """)

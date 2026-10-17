@@ -1,0 +1,54 @@
+{% extends "videos/base.html" %}
+{% block title %}{{ video.title }} | Video Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+  .stage { background: #000; border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; }
+  .stage video { width: 100%; height: 100%; display: block; background: #000; }
+  .info { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.25rem 1.4rem; }
+  .info h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -.02em; margin: 0 0 .4rem; }
+  
+  /* Mtindo wa video za pembeni (other videos) */
+  .rel-item { display: flex; gap: 0.8rem; text-decoration: none; color: inherit; margin-bottom: 1rem; }
+  .rel-item .thumb { flex: 0 0 140px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: #000; position: relative; }
+  .rel-item .thumb video { width: 100%; height: 100%; object-fit: cover; }
+  .rel-item .v-title { font-size: 0.9rem; margin: 0; color: #fff; font-weight: 600; line-height: 1.3; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 py-4">
+  <!-- Sehemu kuu ya video inayocheza -->
+  <div class="col-lg-8">
+    <div class="stage">
+      <video controls autoplay playsinline preload="auto">
+        <source src="{{ video.url }}" type="video/mp4">
+        Browser yako haiwezi kucheza video hii.
+      </video>
+    </div>
+    <div class="info mt-3">
+      <h1 class="text-white">{{ video.title }}</h1>
+    </div>
+  </div>
+
+  <!-- Sehemu ya Other/Related Videos pembeni -->
+  <aside class="col-lg-4">
+    <h2 class="h6 fw-bold mb-3 text-white">Video Zingine</h2>
+    <div class="d-flex flex-column">
+      {% for v in other_videos %}
+        <a href="{% url 'videos:watch' v.id %}" class="rel-item">
+          <div class="thumb">
+            <!-- Thumbnail inachukuliwa moja kwa moja kutoka kwenye url ya video (sekunde ya kwanza #t=1) -->
+            <video src="{{ v.url }}#t=1" preload="metadata" muted playsinline></video>
+          </div>
+          <div>
+            <h3 class="v-title">{{ v.title }}</h3>
+          </div>
+        </a>
+      {% empty %}
+        <p class="text-muted small">Hakuna video zingine kwa sasa.</p>
+      {% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

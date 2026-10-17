@@ -1,0 +1,13 @@
+<a href="{% url 'videos:watch' v.id %}" class="d-block text-decoration-none card-link">
+  <div class="thumb position-relative overflow-hidden" style="aspect-ratio: 16/9; background: #000; border-radius: 10px;">
+    <!-- Hapa inatumia URL ya video yenyewe kama thumbnail kupitia sekunde ya kwanza (#t=1) -->
+    <video src="{{ v.url }}#t=1" preload="metadata" muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+    <div class="play position-absolute top-50 start-50 translate-middle">
+      <span>
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="#fff"><path d="M5 3l16 9-16 9z"/></svg>
+      </span>
+    </div>
+  </div>
+  <h3 class="v-title mt-2 text-white fs-6">{{ v.title }}</h3>
+  <div class="v-meta text-muted small">view &middot; ago</div>
+</a>

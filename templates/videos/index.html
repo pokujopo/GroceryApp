@@ -1,0 +1,34 @@
+{% extends "videos/base.html" %}
+{% block title %}Video Hub{% endblock %}
+{% block content %}
+<div class="pt-5 pb-3">
+  <h1 class="fw-bold mb-1" style="letter-spacing:-.03em">{% if q %}Results for "{{ q }}"{% else %}Latest videos{% endif %}</h1>
+  <p class="mb-0" style="color:var(--muted)">{{ page.paginator.count }} video{{ page.paginator.count|pluralize }}</p>
+</div>
+
+<nav class="chips mb-4" aria-label="Categories">
+  <a class="chip {% if not active_category %}active{% endif %}" href="{% url 'videos:index' %}">All</a>
+  {% for c in categories %}
+    <a class="chip {% if active_category == c.slug %}active{% endif %}" href="?category={{ c.slug }}">{{ c.name }}</a>
+  {% endfor %}
+</nav>
+
+{% if page.object_list %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+  {% for v in page.object_list %}<div class="col">{% include "videos/_card.html" %}</div>{% endfor %}
+</div>
+
+{% if page.has_other_pages %}
+<div class="pager d-flex justify-content-center align-items-center gap-3 mt-5">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">Previous</a>{% endif %}
+  <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">Next</a>{% endif %}
+</div>
+{% endif %}
+{% else %}
+<div class="empty">
+  <h3>No videos found</h3>
+  <p>Try a different search or category.</p>
+</div>
+{% endif %}
+{% endblock %}
